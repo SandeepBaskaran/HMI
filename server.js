@@ -198,14 +198,25 @@ function appTemplate (data) {
                 <link rel="icon" href="img/favicon" >
 
                 <style>
-                body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+                body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif;
+                    background-color: #ffffff;
+            }
                 .col{
                   float: left;
                   width: 50%;
                 }
+                .center {
+                    margin-top: 20%;
+                    text-align: center;
+                    left: 20%;
+                    right: 0;
+                    -ms-transform: translateY(-50%);
+                    transform: translateY(-50%);
+                }   
+
                 </style>
 
-                <body class="w3-light-grey w3-content" style="max-width: 1600px;">
+                <body class="w3-content" style="max-width: 1600px;">
 
                 <!-- Sidebar/menu -->
                 <nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-text-grey w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
@@ -236,7 +247,7 @@ function appTemplate (data) {
                   
                   <!-- Panel -->
                   <div class="container-fluid">
-                    <div id="${parameter}" style="width: 100%; height: 200px; margin: 0 auto"></div>
+                    <div id="${parameter}" class="center" style="width: 100%; height: 350px;"></div>
                   </div>
 
                   <div class="w3-container w3-white" style="width: device-width">
@@ -251,7 +262,7 @@ function appTemplate (data) {
                   <!-- End page content -->
                 </div>
 
-                <footer class="w3-bottom w3-hide-large w3-white w3-xlarge ">
+                <footer class="w3-bottom w3-white w3-xlarge ">
                   <h6 style="text-align: center">Web-based Remote Monitoring & Control System</h6>
                 </footer>
 

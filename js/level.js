@@ -54,12 +54,14 @@ var gaugeOptions = {
 
 // The speed gauge
 var chartSpeed = Highcharts.chart('level', Highcharts.merge(gaugeOptions, {
+  
+  title: {
+      text: 'Level'
+    },
+
   yAxis: {
     min: 0,
     max: 200,
-    title: {
-      text: 'Level'
-    }
   },
 
   credits: {
