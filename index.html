@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<title> HMI </title>
+<title> WEB HMI </title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no">
 <meta name="description" content="Web-based remote monitoring and control system">
@@ -10,6 +10,7 @@
 <meta name="language" content="India">
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!-- Favicon-->
 <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon">
@@ -34,10 +35,12 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <body class="w3-light-grey w3-content" style="max-width: 1600px;">
 
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-text-grey w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
-  <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> HMI </b></h3></a>
-  
+<nav class="w3-sidebar w3-bar-block w3-black w3-animate-left w3-text-teal w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
+
+  <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> WEB HMI </b></h3></a>
+  <hr>
   <a href="about" onclick="w3_close()" class="w3-bar-item w3-button">About</a> 
+  <a href="team" onclick="w3_close()" class="w3-bar-item w3-button">Team</a> 
   <a href="contact" onclick="w3_close()" class="w3-bar-item w3-button">Contact</a> 
   <a href="feedback" onclick="w3_close()" class="w3-bar-item w3-button">Feedback</a>
   <br/>
@@ -46,7 +49,7 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <!-- Top menu on small screens -->
 <header class="w3-container w3-top w3-hide-large w3-white w3-xlarge w3-padding-16 w3-center">
-  <span class="w3-left w3-padding"> HMI </span>
+  <span class="w3-left w3-padding"> WEB HMI </span>
   <a href="javascript:void(0)" class="w3-right w3-button w3-white" onclick="w3_open()">☰</a>
 </header>
 
@@ -73,7 +76,7 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <div class="w3-row"> 
     <div class="col">
       <a href="level"><div id="level" class="graph" style="width: 100%; height: 290px; margin: 0 auto"></div></a>
-      </div>
+    </div>
 
     <div class="col">
       <a href="temperature"><div id="temperature" class="graph" style="width: 100%; height: 290px; margin: 0 auto"></div></a>
@@ -92,7 +95,7 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <!-- End page content -->
 </div>
 
-<footer class="w3-bottom w3-white w3-xlarge ">
+<footer class="w3-bottom w3-white w3-xlarge">
   <h6 style="text-align: center">Web-based Remote Monitoring &amp; Control System</h6>
 </footer>
 

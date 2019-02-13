@@ -6,21 +6,113 @@ var app = express();
 app.use(morgan('combined'));
 
 var about = {
-    title : 'HMI | About',
+    title : 'WEB HMI | About',
     heading : 'About',
-    content : '<h1 class="center" >Nothing Much</h1>',
+    content : `<div class="w3-container w3-card w3-white w3-margin-bottom">
+                <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-suitcase fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Work Experience</h2>
+                <div class="w3-container">
+                  <h5 class="w3-opacity"><b>Front End Developer / w3schools.com</b></h5>
+                  <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jan 2015 - <span class="w3-tag w3-teal w3-round">Current</span></h6>
+                  <p>Lorem ipsum dolor sit amet. Praesentium magnam consectetur vel in deserunt aspernatur est reprehenderit sunt hic. Nulla tempora soluta ea et odio, unde doloremque repellendus iure, iste.</p>
+                  <hr>
+                </div>
+                <div class="w3-container">
+                  <h5 class="w3-opacity"><b>Web Developer / something.com</b></h5>
+                  <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Mar 2012 - Dec 2014</h6>
+                  <p>Consectetur adipisicing elit. Praesentium magnam consectetur vel in deserunt aspernatur est reprehenderit sunt hic. Nulla tempora soluta ea et odio, unde doloremque repellendus iure, iste.</p>
+                  <hr>
+                </div>
+                <div class="w3-container">
+                  <h5 class="w3-opacity"><b>Graphic Designer / designsomething.com</b></h5>
+                  <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jun 2010 - Mar 2012</h6>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. </p><br>
+                </div>
+                
+                <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-certificate fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Education</h2>
+                <div class="w3-container">
+                  <h5 class="w3-opacity"><b>W3Schools.com</b></h5>
+                  <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Forever</h6>
+                  <p>Web Development! All I need to know in one place</p>
+                  <hr>
+                </div>
+                <div class="w3-container">
+                  <h5 class="w3-opacity"><b>London Business School</b></h5>
+                  <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>2013 - 2015</h6>
+                  <p>Master Degree</p>
+                  <hr>
+                </div>
+                <div class="w3-container">
+                  <h5 class="w3-opacity"><b>School of Coding</b></h5>
+                  <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>2010 - 2013</h6>
+                  <p>Bachelor Degree</p><br>
+                </div>
+              </div>`,
+};
+
+var team = {
+    title : 'WEB HMI | Team',
+    heading : 'Team',
+    content : `<div class="w3-container w3-padding-64 w3-theme-l5">
+                <div class="w3-padding-16"><span class="w3-xlarge w3-border-teal w3-bottombar">Team</span></div>
+                    <div class="w3-row"><br>
+
+                    <div class="w3-quarter">
+                      <img src="/img/059" alt="pradeep" style="width:45%" class="w3-circle w3-hover-opacity">
+                      <h3>Pradeep A R</h3>
+                      <p>412815107059</p>
+                    </div>
+
+                    <div class="w3-quarter">
+                      <img src="/w3images/avatar.jpg" alt="sandeep" style="width:45%" class="w3-circle w3-hover-opacity">
+                      <h3>Sandeep B</h3>
+                      <p>412815107082</p>
+                    </div>
+
+                    <div class="w3-quarter">
+                      <img src="/w3images/avatar.jpg" alt="suresh" style="width:45%" class="w3-circle w3-hover-opacity">
+                      <h3>Suresh K</h3>
+                      <p>412815107099</p>
+                    </div>
+
+                    <div class="w3-quarter">
+                      <img src="/w3images/avatar.jpg" alt="sabari" style="width:45%" class="w3-circle w3-hover-opacity">
+                      <h3>Sabari Ganesh J</h3>
+                      <p>412815107301</p>
+                    </div>
+
+                    </div>
+                </div>`,
 };
 
 var contact = {
-    title : 'HMI | Contact',
+    title : 'WEB HMI | Contact',
     heading : 'Contact',
-    content : '<h1 class="center" >Soon we will be updating this section</h1>',
+    content : `<div class="w3-container w3-padding-64 w3-theme-l5">
+                  <div class="w3-row">
+                    <div class="w3-col m5">
+                    <div class="w3-padding-16"><span class="w3-xlarge w3-border-teal w3-bottombar">Contact Us</span></div>
+                      <h3>Address</h3>
+                        <p><i class="fa fa-map-marker w3-text-teal w3-xlarge"></i>  Valliammai Engineering College <br> Chennai, TamilNadu</p>
+                        <a class="w3-button w3-large w3-teal" href="https://www.github.com/SandeepBaskaran" target="_blank" title="Facebook"><i class="fa fa-github"></i></a>
+                    </div>
+                    </div>
+                   </div>
+                </div>`,
 };
 
 var feedback = {
-    title : 'HMI | Feedback',
+    title : 'WEB HMI | Feedback',
     heading : 'Feedback',
-    content : '<h1 class="center" >Hey, there! I told you this is a prototype!!!</h1>',
+    content : `<div class="w3-container w3-padding-64 w3-theme-l5">
+                  <div class="w3-row">
+                    <div class="w3-col m5">
+                    <div class="w3-padding-16"><span class="w3-xlarge w3-border-teal w3-bottombar">Feedback</span></div>
+                    <p>Just fill out the following feedback form to register your suggestion.</p>
+                      <a class="w3-button w3-large w3-teal" href="#" target="_blank">Feedback Form</a>
+                    </div>
+                    </div>
+                   </div>
+                </div>`,
 }
 
 function mainTemplate (data) {
@@ -40,6 +132,7 @@ function mainTemplate (data) {
                 <meta name="language" content="India">
                 <link rel="stylesheet" href="main.css">
                 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
                 
                 <!-- Favicon-->
                 <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon">
@@ -85,10 +178,11 @@ function mainTemplate (data) {
                 <body class="w3-light-grey w3-content" style="max-width: 1600px;">
 
                 <!-- Sidebar/menu -->
-                <nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-text-grey w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
-                <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> HMI </b></h3></a>
-
-                <a href="about" onclick="w3_close()" class="w3-bar-item w3-button">About</a> 
+                <nav class="w3-sidebar w3-bar-block w3-black w3-animate-left w3-text-teal w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
+                <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> WEB HMI </b></h3></a>
+                <hr>
+                <a href="about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+                <a href="team" onclick="w3_close()" class="w3-bar-item w3-button">Team</a> 
                 <a href="contact" onclick="w3_close()" class="w3-bar-item w3-button">Contact</a> 
                 <a href="feedback" onclick="w3_close()" class="w3-bar-item w3-button">Feedback</a>
                 <br/>
@@ -143,25 +237,25 @@ function mainTemplate (data) {
 }
 
 var flow = {
-    title : 'HMI | Flow',
+    title : 'WEB HMI | Flow',
     heading : 'Flow',
     parameter : 'flow',
 };
 
 var level = {
-    title : 'HMI | Level',
+    title : 'WEB HMI | Level',
     heading : 'Level',
     parameter : 'level',
 };
 
 var pressure = {
-    title : 'HMI | Pressure',
+    title : 'WEB HMI | Pressure',
     heading : 'Pressure',
     parameter : 'pressure',
 }
 
 var temperature = {
-    title : 'HMI | Temperature',
+    title : 'WEB HMI | Temperature',
     heading : 'Temperature',
     parameter : 'temperature',
 }
@@ -171,6 +265,7 @@ function appTemplate (data) {
     var heading = data.heading;
     var content = data.content;
     var parameter = data.parameter;
+    var value = data.value;
         var htmlTemplate = `    
                 <!DOCTYPE html>
                 <html lang="en">
@@ -200,7 +295,7 @@ function appTemplate (data) {
                 <style>
                 body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif;
                     background-color: #ffffff;
-            }
+                }
                 .col{
                   float: left;
                   width: 50%;
@@ -219,9 +314,9 @@ function appTemplate (data) {
                 <body class="w3-content" style="max-width: 1600px;">
 
                 <!-- Sidebar/menu -->
-                <nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-text-grey w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
-                  <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> HMI </b></h3></a>
-                  
+                <nav class="w3-sidebar w3-bar-block w3-black w3-animate-left w3-text-teal w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
+                  <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> WEB HMI </b></h3></a>
+                  <hr>
                   <a href="pressure" onclick="w3_close()" class="w3-bar-item w3-button">Pressure</a> 
                   <a href="flow" onclick="w3_close()" class="w3-bar-item w3-button">Flow</a> 
                   <a href="level" onclick="w3_close()" class="w3-bar-item w3-button">Level</a>
@@ -248,16 +343,24 @@ function appTemplate (data) {
                   <!-- Panel -->
                   <div class="container-fluid">
                     <div id="${parameter}" class="center" style="width: 100%; height: 350px;"></div>
+                        <p>
+                            <button class="w3-button w3-teal w3-round-xxlarge">ON/OFF</button>
+                            <button class="w3-button w3-teal w3-round-xxlarge">${value}</button>
+                            <button class="w3-button w3-teal w3-round-xxlarge">Log Data</button>
+                            <input type="range" name="points" min="0" max="10" step ="0.1"/>
+                        </p>
+                    </div>
                   </div>
 
-                  <div class="w3-container w3-white" style="width: device-width">
-                    <h6 style="text-align: center">
-                    <a href="pressure">Pressure</a> | 
-                    <a href="flow">Flow</a> | 
-                    <a href="level">Level</a> | 
-                    <a href="temperature">Temperature</a>
-                    </h6>
-                 </div>
+                      <div class="w3-container w3-white" style="width: device-width">
+                        <h6 style="text-align: center">
+                        <a href="pressure">Pressure</a> | 
+                        <a href="flow">Flow</a> | 
+                        <a href="level">Level</a> | 
+                        <a href="temperature">Temperature</a>
+                        </h6>
+                     </div>
+                 
                   
                   <!-- End page content -->
                 </div>
@@ -361,12 +464,20 @@ app.get('/about', function (req, res) {
   res.send(mainTemplate(about));
 });
 
+app.get('/team', function (req, res) {
+  res.send(mainTemplate(team));
+});
+
 app.get('/contact', function (req, res) {
     res.send(mainTemplate(contact));
 });
 
 app.get('/feedback', function (req, res) {
     res.send(mainTemplate(feedback));
+});
+
+app.get('/img/avatar', function (req, res) {
+    res.sendFile(path.join(__dirname, 'img', 'avatar.png'));
 });
 
 app.get('/img/android-chrome-192x192', function (req, res) {
@@ -401,7 +512,7 @@ app.get('/img/mstile-150x150', function (req, res) {
     res.sendFile(path.join(__dirname, 'img', 'mstile-150x150.png'));
 });
 
-var port = 2018;
+var port = 2019;
 app.listen(port, function () {
-  console.log(`HMI Web app listening on port ${port}!`);
+  console.log(`WEB HMI Web app listening on port ${port}!`);
 });
