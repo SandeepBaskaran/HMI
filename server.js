@@ -5,6 +5,20 @@ var path = require('path');
 var app = express();
 app.use(morgan('combined'));
 
+var configuration = {
+    title : 'WEB HMI | Configuration',
+    heading : 'Configuration',
+    content : `<div class="w3-container w3-padding-64 w3-theme-l5">
+                  <div class="w3-row">
+                    <div class="w3-col m5">
+                    <div class="w3-padding-16"><span class="w3-xlarge w3-border-teal w3-bottombar">Configuration</span></div>
+                      <img class="content-img" src="img/blockdia" />
+                    </div>
+                    </div>
+                   </div>
+                </div>`,
+};
+
 var about = {
     title : 'WEB HMI | About',
     heading : 'About',
@@ -181,6 +195,7 @@ function mainTemplate (data) {
                 <nav class="w3-sidebar w3-bar-block w3-black w3-animate-left w3-text-teal w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
                 <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> WEB HMI </b></h3></a>
                 <hr>
+                <a href="configuration" onclick="w3_close()" class="w3-bar-item w3-button">Configuration</a>
                 <a href="about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
                 <a href="team" onclick="w3_close()" class="w3-bar-item w3-button">Team</a> 
                 <a href="contact" onclick="w3_close()" class="w3-bar-item w3-button">Contact</a> 
@@ -240,24 +255,48 @@ var flow = {
     title : 'WEB HMI | Flow',
     heading : 'Flow',
     parameter : 'flow',
+    buttons :   `<div>
+                    <button class="w3-button w3-teal w3-round-xxlarge">ON/OFF</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">000</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">Log Data</button>
+                    <input type="range" name="points" min="0" max="10" step ="0.1"/>
+                </div>`,
 };
 
 var level = {
     title : 'WEB HMI | Level',
     heading : 'Level',
     parameter : 'level',
+    buttons :   `<div>
+                    <button class="w3-button w3-teal w3-round-xxlarge">ON/OFF</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">000</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">Log Data</button>
+                    <input type="range" name="points" min="0" max="10" step ="0.1"/>
+                </div>`,
 };
 
 var pressure = {
     title : 'WEB HMI | Pressure',
     heading : 'Pressure',
     parameter : 'pressure',
+    buttons :   `<div>
+                    <button class="w3-button w3-teal w3-round-xxlarge">ON/OFF</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">000</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">Log Data</button>
+                    <input type="range" name="points" min="0" max="10" step ="0.1"/>
+                </div>`,
 }
 
 var temperature = {
     title : 'WEB HMI | Temperature',
     heading : 'Temperature',
     parameter : 'temperature',
+    buttons :   `<div>
+                    <button class="w3-button w3-teal w3-round-xxlarge">ON/OFF</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">000</button>
+                    <button class="w3-button w3-teal w3-round-xxlarge">Log Data</button>
+                    <input type="range" name="points" min="0" max="10" step ="0.1"/>
+                </div>`,
 }
 
 function appTemplate (data) {
@@ -265,7 +304,7 @@ function appTemplate (data) {
     var heading = data.heading;
     var content = data.content;
     var parameter = data.parameter;
-    var value = data.value;
+    var buttons = data.buttons;
         var htmlTemplate = `    
                 <!DOCTYPE html>
                 <html lang="en">
@@ -341,18 +380,34 @@ function appTemplate (data) {
                   <div class="w3-hide-large" style="margin-top:83px"></div>
                   
                   <!-- Panel -->
-                  <div class="container-fluid">
-                    <div id="${parameter}" class="center" style="width: 100%; height: 350px;"></div>
-                        <p>
-                            <button class="w3-button w3-teal w3-round-xxlarge">ON/OFF</button>
-                            <button class="w3-button w3-teal w3-round-xxlarge">${value}</button>
-                            <button class="w3-button w3-teal w3-round-xxlarge">Log Data</button>
-                            <input type="range" name="points" min="0" max="10" step ="0.1"/>
-                        </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="container-fluid">
+                                <div id="${parameter}" class="center" style="width: 100%; height: 350px;"></div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-3">
+                                <input type="text">
+                            </div>
+                            <div class="col-xs-3">
+                                <button class="btn" href="#" >Click</button>
+                            </div>
+                            <div class=" class="col-xs-3 slidecontainer">
+                                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                                <p>Value: <span id="demo"></span></p>
+                            </div>
+                            <div  class="col-xs-3">
+                                <button class="btn" href="#" >Click</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
 
-                      <div class="w3-container w3-white" style="width: device-width">
+                    <div class="w3-container w3-white" style="width: device-width">
                         <h6 style="text-align: center">
                         <a href="pressure">Pressure</a> | 
                         <a href="flow">Flow</a> | 
@@ -388,6 +443,16 @@ function appTemplate (data) {
                 <script src="js/solid-gauge"></script>
 
                 <script src="js/${parameter}"></script>
+
+                <script>
+                var slider = document.getElementById("myRange");
+                var output = document.getElementById("demo");
+                output.innerHTML = slider.value;
+
+                slider.oninput = function() {
+                output.innerHTML = this.value;
+                }
+                </script>
 
                 </body>
                 </html>
@@ -460,6 +525,10 @@ app.get('/404', function (req, res){
     res.send('<h1 style="text-align: center">ERROR:404 not found</h1>');
 });
 
+app.get('/configuration', function (req, res) {
+  res.send(mainTemplate(configuration));
+});
+
 app.get('/about', function (req, res) {
   res.send(mainTemplate(about));
 });
@@ -476,8 +545,8 @@ app.get('/feedback', function (req, res) {
     res.send(mainTemplate(feedback));
 });
 
-app.get('/img/avatar', function (req, res) {
-    res.sendFile(path.join(__dirname, 'img', 'avatar.png'));
+app.get('/img/blockdia', function (req, res) {
+    res.sendFile(path.join(__dirname, 'img', 'blockdia.png'));
 });
 
 app.get('/img/android-chrome-192x192', function (req, res) {
