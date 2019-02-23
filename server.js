@@ -374,39 +374,34 @@ function appTemplate (data) {
                 <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
                 <!-- !PAGE CONTENT! -->
-                <div class="w3-main" style="margin-left:300px">
+                <div class="w3-main container" style="margin-left:300px">
 
                   <!-- Push down content on small screens --> 
                   <div class="w3-hide-large" style="margin-top:83px"></div>
                   
                   <!-- Panel -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="container-fluid">
-                                <div id="${parameter}" class="center" style="width: 100%; height: 350px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="col-xs-3">
-                                <input type="text">
-                            </div>
-                            <div class="col-xs-3">
-                                <button class="btn" href="#" >Click</button>
-                            </div>
-                            <div class=" class="col-xs-3 slidecontainer">
-                                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                <p>Value: <span id="demo"></span></p>
-                            </div>
-                            <div  class="col-xs-3">
-                                <button class="btn" href="#" >Click</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
+                    <div id="${parameter}" class="center" style="width: 100%; height: 350px;"></div>
 
+                                <div class="w3-row center">
+                                    <div class="w3-col">
+                                        <div class="w3-row-padding">
+                                            <div class="w3-quarter">
+                                                <input class="w3-input w3-border" type="text" value="test" disabled>
+                                            </div>
+                                            <div class="w3-quarter">
+                                                <button class="w3-btn w3-blue">Register</button>
+                                            </div>
+                                            <div class="w3-quarter">
+                                                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                                            </div>
+                                            <div class="w3-quarter ">
+                                                <button class="w3-btn w3-blue">Register</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                    
                     <div class="w3-container w3-white" style="width: device-width">
                         <h6 style="text-align: center">
                         <a href="pressure">Pressure</a> | 
@@ -446,12 +441,13 @@ function appTemplate (data) {
 
                 <script>
                 var slider = document.getElementById("myRange");
-                var output = document.getElementById("demo");
-                output.innerHTML = slider.value;
+var output = document.getElementById("demo");
+output.innerHTML = slider.value; // Display the default slider value
 
-                slider.oninput = function() {
-                output.innerHTML = this.value;
-                }
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
                 </script>
 
                 </body>
