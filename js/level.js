@@ -1,3 +1,4 @@
+
 var gaugeOptions = {
 
   chart: {
@@ -69,7 +70,7 @@ var chartSpeed = Highcharts.chart('level', Highcharts.merge(gaugeOptions, {
   },
 
   series: [{
-    data: [80],
+    data: [0],
     dataLabels: {
       format: '<div style="text-align:center"><span style="font-size:25px;color:' +
         ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
@@ -82,24 +83,39 @@ var chartSpeed = Highcharts.chart('level', Highcharts.merge(gaugeOptions, {
 
 }));
 
+
+
 // Bring life to the dials
 setInterval(function () {
-  // Speed
+
+var hmiData;
+// Speed
   var point,
-    newVal,
-    inc;
+    newVal;
 
-  if (chartSpeed) {
-    point = chartSpeed.series[0].points[0];
-    inc = Math.round((Math.random() - 0.5) * 100);
-    newVal = point.y + inc;
-
-    if (newVal < 0 || newVal > 200) {
-      newVal = point.y - inc;
-    }
+$.ajax({
+        url: 'http://127.0.0.1:2019/getData',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            hmiData = JSON.parse(data);
+            if (chartSpeed) {
+            point = chartSpeed.series[0].points[0];
+            newVal = parseInt(hmiData['level']);
+            if (newVal < 0 || newVal > 200) {
+            newVal = point.y - 10;
+            }
 
     point.update(newVal);
   }
-}, 2000);
+        },
+        error: function (xhr, status, error) {
+            //alert('Error: ' + error.message);
+           // alert(status)
+           // alert(error)
+          }
+      });
+
+}, 1000);
 
 

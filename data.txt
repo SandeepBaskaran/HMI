@@ -1,0 +1,1 @@
+flow=50&temperature=100&level=40

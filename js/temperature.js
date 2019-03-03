@@ -55,7 +55,7 @@ Highcharts.chart('temperature', {
   
     series: [{
       name: 'Temperature',
-      data: [80],
+      data: [0],
       dataLabels: {
         formatter: function () {
           var cel = this.y,
@@ -85,18 +85,37 @@ Highcharts.chart('temperature', {
     // Add some life
     function (chart) {
       setInterval(function () {
-        if (chart.axes) { // not destroyed
+
+        $.ajax({
+        url: 'http://127.0.0.1:2019/getData',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            hmiData = JSON.parse(data);
+            if (chart.axes) { // not destroyed
           var point = chart.series[0].points[0],
             newVal,
             inc = Math.round((Math.random() - 0.5) * 20);
   
-          newVal = point.y + inc;
+          newVal = parseInt(hmiData['temperature']);
           if (newVal < 0 || newVal > 200) {
             newVal = point.y - inc;
           }
   
           point.update(newVal);
         }
+        },
+        error: function (xhr, status, error) {
+            //alert('Error: ' + error.message);
+           // alert(status)
+           // alert(error)
+          }
+      });
+
+
+
+
+
       }, 3000);
   
     });

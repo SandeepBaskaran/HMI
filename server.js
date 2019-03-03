@@ -1,9 +1,14 @@
 var express = require('express');
 var morgan = require('morgan');
 var path = require('path');
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var fs = require('fs');
 
 var app = express();
 app.use(morgan('combined'));
+
+var data = {'flow':0,'level':0,'temperature':0};
 
 var configuration = {
     title : 'WEB HMI | Configuration',
@@ -251,6 +256,149 @@ function mainTemplate (data) {
             return htmlTemplate;
 }
 
+function index() {
+    var htmlTemplate=`<!DOCTYPE html>
+                        <html lang="en">
+                        <title> WEB HMI </title>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no">
+                        <meta name="description" content="Web-based remote monitoring and control system">
+                        <meta name="keywords" content="hmi, dashboard, remote control, remote monitoring">
+                        <meta name="robots" content="index, nofollow">
+                        <meta name="web_author" content="Sandeep Baskaran">
+                        <meta name="language" content="India">
+                        <link rel="stylesheet" href="main.css">
+                        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+                        <!-- Favicon-->
+                        <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon">
+                        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32">
+                        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16">
+                        <link rel="manifest" href="manifest">
+                        <link rel="mask-icon" href="/img/safari-pinned-tab" color="#5bbad5">
+                        <meta name="msapplication-TileColor" content="#00aba9">
+                        <meta name="theme-color" content="#00CED1">
+                        <link rel="shortcut icon" href="/img/favicon">
+
+                        <link rel="icon" href="img/favicon" >
+
+                        <style>
+                        body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+                        .col{
+                          float: left;
+                          width: 50%;
+                        }
+                        </style>
+
+                        <body class="w3-light-grey w3-content" style="max-width: 1600px;">
+
+                        <!-- Sidebar/menu -->
+                        <nav class="w3-sidebar w3-bar-block w3-black w3-animate-left w3-text-teal w3-collapse w3-top w3-center" style="z-index:3;width:300px;font-weight:bold" id="mySidebar"><br>
+
+                          <a href="/" onclick="w3_close()" class="w3-bar-item w3-button"><h3 class="w3-padding-64 w3-center"><b> WEB HMI </b></h3></a>
+                          <hr>
+                          <a href="configuration" onclick="w3_close()" class="w3-bar-item w3-button">Configuration</a>
+                          <a href="about" onclick="w3_close()" class="w3-bar-item w3-button">About</a> 
+                          <a href="team" onclick="w3_close()" class="w3-bar-item w3-button">Team</a> 
+                          <a href="contact" onclick="w3_close()" class="w3-bar-item w3-button">Contact</a> 
+                          <a href="feedback" onclick="w3_close()" class="w3-bar-item w3-button">Feedback</a>
+                          <br/>
+                          <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hide-large">CLOSE</a>
+                        </nav>
+
+                        <!-- Top menu on small screens -->
+                        <header class="w3-container w3-top w3-hide-large w3-white w3-xlarge w3-padding-16 w3-center">
+                          <span class="w3-left w3-padding"> WEB HMI </span>
+                          <a href="javascript:void(0)" class="w3-right w3-button w3-white" onclick="w3_open()">☰</a>
+                        </header>
+
+                        <!-- Overl ay effect when opening sidebar on small screens -->
+                        <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+                        <!-- !PAGE CONTENT! -->
+                        <div class="w3-main" style="margin-left:300px">
+
+                          <!-- Push down content on small screens --> 
+                          <div class="w3-hide-large" style="margin-top:83px"></div>
+                          
+                          <!-- Panel -->
+                          <div class="w3-row">
+                            <div class="col">
+                              <a href="pressure"><div id="pressure" class="graph" style="width: 100%; height: 290px; margin: 0 auto"></div></a>
+                            </div>
+
+                            <div class="col">
+                              <a href="flow"><div id="flow" class="graph" style="width: 100%; height: 290px; margin: 0 auto"></div></a>
+                            </div>
+                          </div>
+
+                          <div class="w3-row"> 
+                            <div class="col">
+                              <a href="level"><div id="level" class="graph" style="width: 100%; height: 290px; margin: 0 auto"></div></a>
+                            </div>
+
+                            <div class="col">
+                              <a href="temperature"><div id="temperature" class="graph" style="width: 100%; height: 290px; margin: 0 auto"></div></a>
+                            </div>
+                         </div>
+
+                         <div class="w3-container w3-white" style="width: device-width">
+                            <h6 style="text-align: center">
+                            <a href="pressure">Pressure</a> | 
+                            <a href="flow">Flow</a> | 
+                            <a href="level">Level</a> | 
+                            <a href="temperature">Temperature</a>
+                            </h6>
+                         </div>
+                          
+                          <!-- End page content -->
+                        </div>
+
+                        <footer class="w3-bottom w3-white w3-xlarge">
+                          <h6 style="text-align: center">Web-based Remote Monitoring &amp; Control System</h6>
+                        </footer>
+
+                        <script>
+                        // Script to open and close sidebar
+                        function w3_open() {
+                            document.getElementById("mySidebar").style.display = "block";
+                            document.getElementById("myOverlay").style.display = "block";
+                        }
+                         
+                        function w3_close() {
+                            document.getElementById("mySidebar").style.display = "none";
+                            document.getElementById("myOverlay").style.display = "none";
+                        }
+
+                        </script>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+                        <script type="text/javascript">
+
+                        $.get('file:///home/sandeep/Documents/HMI/data.txt', function(data) {    
+                            alert(data);
+
+                        });
+
+                        </script>
+
+
+                        <script src="js/highcharts"></script>
+                        <script src="js/highcharts-more"></script>
+                        <script src="js/solid-gauge"></script>
+
+                        <script src="js/pressure"></script>
+                        <script src="js/temperature"></script>
+                        <script src="js/flow"></script>
+                        <script src="js/level"></script>
+
+                        </body>
+                        </html>`;
+                                    return htmlTemplate;
+                        }
+
+
 var flow = {
     title : 'WEB HMI | Flow',
     heading : 'Flow',
@@ -456,6 +604,22 @@ slider.oninput = function() {
             `;
             return htmlTemplate;
 }
+
+
+app.post('/hmi', urlencodedParser, function (req, res) {
+
+data['flow'] = req.body.flow;
+data['level'] = req.body.level;
+data['temperature'] = req.body.temperature;
+console.log(data);
+res.end("Data Recieved");
+
+});
+
+app.get('/getData', function (req,res) {
+console.log(data);
+res.send(JSON.stringify(data));
+});
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'index.html'));
