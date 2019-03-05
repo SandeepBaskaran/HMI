@@ -402,6 +402,8 @@ function appTemplate (data) {
 
                 </script>
 
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
                 <script src="js/highcharts"></script>
                 <script src="js/highcharts-more"></script>
                 <script src="js/solid-gauge"></script>
