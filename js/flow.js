@@ -16,8 +16,35 @@ Highcharts.setOptions({
           // set up the updating of the chart each second
           var series = this.series[0];
           setInterval(function () {
-            var x = (new Date()).getTime(), // current time
-              y = Math.random();
+            var hmiData;
+              var point,
+                  y;
+
+              $.ajax({
+                      url: 'http://127.0.0.1:2019/getData',
+                      type: 'GET',
+                      data: {},
+                      success: function (data) {
+                          hmiData = JSON.parse(data);
+                          if (chartSpeed) {
+                          point = chartSpeed.series[0].points[0];
+                          var x = (new Date()).getTime(),
+                          y = parseInt(hmiData['flow']);
+                          if (y < 0 || y > 2) {
+                          y = point.y - 0.5;
+                          }
+
+                  point.update(y);
+                }
+                      },
+                      error: function (xhr, status, error) {
+                          //alert('Error: ' + error.message);
+                         // alert(status)
+                         // alert(error)
+                        }
+                    });
+            /*var x = (new Date()).getTime(), // current time
+              y = Math.random();*/
             series.addPoint([x, y], true, true);
           }, 1000);
         }

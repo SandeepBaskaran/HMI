@@ -112,11 +112,7 @@ Highcharts.chart('temperature', {
           }
       });
 
-
-
-
-
-      }, 3000);
+    }, 3000);
   
     });
   
