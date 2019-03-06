@@ -108,7 +108,7 @@ print('Done')
 
 import requests
 
-payload = {'flow': 1, 'temperature':80,'level':100};
+payload = {'flow':5, 'temperature':80,'level':100};
 
 r = requests.post("http://127.0.0.1:2019/hmi", data=payload)
 print(r.text)

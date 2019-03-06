@@ -1,100 +1,120 @@
+var gaugeOptions = {
 
-Highcharts.setOptions({
-    global: {
-      useUTC: false
+  chart: {
+    type: 'solidgauge'
+  },
+
+  title: null,
+
+  pane: {
+    center: ['50%', '85%'],
+    size: '100%',
+    startAngle: -90,
+    endAngle: 90,
+    background: {
+      backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+      innerRadius: '60%',
+      outerRadius: '100%',
+      shape: 'arc'
     }
-  });
-  
-  Highcharts.chart('flow', {
-    chart: {
-      type: 'spline',
-      animation: Highcharts.svg, // don't animate in old IE
-      marginRight: 10,
-      events: {
-        load: function () {
-  
-          // set up the updating of the chart each second
-          var series = this.series[0];
-          setInterval(function () {
-            var hmiData;
-              var point,
-                  y;
+  },
 
-              $.ajax({
-                      url: 'http://127.0.0.1:2019/getData',
-                      type: 'GET',
-                      data: {},
-                      success: function (data) {
-                          hmiData = JSON.parse(data);
-                          if (chartSpeed) {
-                          point = chartSpeed.series[0].points[0];
-                          var x = (new Date()).getTime(),
-                          y = parseInt(hmiData['flow']);
-                          if (y < 0 || y > 2) {
-                          y = point.y - 0.5;
-                          }
+  tooltip: {
+    enabled: false
+  },
 
-                  point.update(y);
-                }
-                      },
-                      error: function (xhr, status, error) {
-                          //alert('Error: ' + error.message);
-                         // alert(status)
-                         // alert(error)
-                        }
-                    });
-            /*var x = (new Date()).getTime(), // current time
-              y = Math.random();*/
-            series.addPoint([x, y], true, true);
-          }, 1000);
-        }
-      }
-    },
+  // the value axis
+  yAxis: {
+    stops: [
+      [0.1, '#55BF3B'], // green
+      [0.5, '#DDDF0D'], // yellow
+      [0.9, '#DF5353'] // red
+    ],
+    lineWidth: 0,
+    minorTickInterval: null,
+    tickAmount: 2,
     title: {
+      y: -70
+    },
+    labels: {
+      y: 16
+    }
+  },
+
+  plotOptions: {
+    solidgauge: {
+      dataLabels: {
+        y: 5,
+        borderWidth: 0,
+        useHTML: true
+      }
+    }
+  }
+};
+
+// The speed gauge
+var flowChart = Highcharts.chart('flow', Highcharts.merge(gaugeOptions, {
+  
+  title: {
       text: 'Flow'
     },
-    xAxis: {
-      type: 'datetime',
-      tickPixelInterval: 150
-    },
-    yAxis: {
-      title: {
-        text: 'Value'
-      },
-      plotLines: [{
-        value: 0,
-        width: 1,
-        color: '#808080'
-      }]
+
+  yAxis: {
+    min: 0,
+    max: 10,
+  },
+
+  credits: {
+    enabled: false
+  },
+
+  series: [{
+    data: [0],
+    dataLabels: {
+      format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+           '<span style="font-size:12px;color:silver">Litres</span></div>'
     },
     tooltip: {
-      formatter: function () {
-        return '<b>' + this.series.name + '</b><br/>' +
-          Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-          Highcharts.numberFormat(this.y, 2);
-      }
-    },
-    legend: {
-      enabled: false
-    },
-    exporting: {
-      enabled: false
-    },
-    series: [{
-      name: 'Random data',
-      data: (function () {
-        // generate an array of random data
-        var data = [],
-          time = (new Date()).getTime(),
-          i;
-  
-        for (i = -19; i <= 0; i += 1) {
-          data.push({
-            x: time + i * 1000,
-            y: Math.random()
-          });
-        }
-        return data;
-      }())
-    }]
-  });
+      valueSuffix: ' Litres'
+    }
+  }]
+
+}));
+
+
+
+// Bring life to the dials
+setInterval(function () {
+
+var hmiData;
+// Speed
+  var point,
+    flowVal;
+
+$.ajax({
+        url: 'http://127.0.0.1:2019/getData',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            hmiData = JSON.parse(data);
+            if (flowChart) {
+            point = flowChart.series[0].points[0];
+            flowVal = parseInt(hmiData['flow']);
+            if (flowVal < 0 || flowVal > 10) {
+            flowVal = point.y - 10;
+            }
+
+    point.update(flowVal);
+  }
+        },
+        error: function (xhr, status, error) {
+            //alert('Error: ' + error.message);
+           // alert(status)
+           // alert(error)
+          }
+      });
+
+}, 1000);
+
+

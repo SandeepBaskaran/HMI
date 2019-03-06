@@ -54,7 +54,7 @@ var gaugeOptions = {
 };
 
 // The speed gauge
-var chartSpeed = Highcharts.chart('level', Highcharts.merge(gaugeOptions, {
+var levelChart = Highcharts.chart('level', Highcharts.merge(gaugeOptions, {
   
   title: {
       text: 'Level'
@@ -99,8 +99,9 @@ $.ajax({
         data: {},
         success: function (data) {
             hmiData = JSON.parse(data);
-            if (chartSpeed) {
-            point = chartSpeed.series[0].points[0];
+            if (levelChart) {
+            point = levelChart.series[0].points[0];
+            console.log(hmiData['level']);
             newVal = parseInt(hmiData['level']);
             if (newVal < 0 || newVal > 200) {
             newVal = point.y - 10;
