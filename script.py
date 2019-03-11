@@ -1,114 +1,133 @@
-"""
-#Temperature
-import os                                                  # import os module
-import glob                                                # import glob module
-import time                                                # import time module
-os.system('modprobe w1-gpio')                              # load one wire communication device kernel modules
-os.system('modprobe w1-therm')                                                 
-base_dir = '/sys/bus/w1/devices/'                          # point to the address
-device_folder = glob.glob(base_dir + '28*')[0]             # find device with address starting from 28*
-device_file = device_folder + '/w1_slave'                  # store the details
-def read_temp_raw():
-   f = open(device_file, 'r')
-   lines = f.readlines()                                   # read the device details
-   f.close()
-   return lines
-
-def read_temp():
-   lines = read_temp_raw()
-   while lines[0].strip()[-3:] != 'YES':                   # ignore first line
-      time.sleep(0.2)
-      lines = read_temp_raw()
-   equals_pos = lines[1].find('t=')                        # find temperature in the details
-   if equals_pos != -1:
-      temp_string = lines[1][equals_pos+2:]
-      temp_c = float(temp_string) / 1000.0                 # convert to Celsius
-      temp_f = temp_c * 9.0 / 5.0 + 32.0                   # convert to Fahrenheit 
-      return temp_c, temp_f
-
-while True:
-   print(read_temp())                                      # Print temperature
-   time.sleep(1)
-
-#Level
 import RPi.GPIO as GPIO                    #Import GPIO library
-import time                                #Import time library
-GPIO.setmode(GPIO.BCM)                     #Set GPIO pin numbering 
+import time, sys                              #Import time library
+import numpy as np                          #Numpy package for dummy values
+import requests
+from flask import Flask, request
+import json
+from threading import Thread
 
+payload = {'flow':5, 'temperature':80,'level':100}; #initial values for pay load
+values = {"thresholdPressure":0,"thresholdFlow":0,"thresholdLevel":0,"thresholdTemperature":0};
+app = Flask(__name__);
+
+#Ultrasonic sensor and relay pins
+
+
+GPIO.setmode(GPIO.BCM)                     #Set GPIO pin numbering 
 TRIG = 23                                  #Associate pin 23 to TRIG
 ECHO = 24                                  #Associate pin 24 to ECHO
-
-print "Distance measurement in progress"
+in1 = 17                                    #Relay IN 1 pin
+in2 = 18                                    #Relay IN 2 pin
 
 GPIO.setup(TRIG,GPIO.OUT)                  #Set pin as GPIO out
 GPIO.setup(ECHO,GPIO.IN)                   #Set pin as GPIO in
+GPIO.setup(in1, GPIO.OUT)
+GPIO.setup(in2, GPIO.OUT)
 
-while True:
+GPIO.output(in1, False)
+GPIO.output(in2, False)
 
-  GPIO.output(TRIG, False)                 #Set TRIG as LOW
-  print "Waitng For Sensor To Settle"
-  time.sleep(2)                            #Delay of 2 seconds
+#Water flow sensor pins
 
-  GPIO.output(TRIG, True)                  #Set TRIG as HIGH
-  time.sleep(0.00001)                      #Delay of 0.00001 seconds
-  GPIO.output(TRIG, False)                 #Set TRIG as LOW
+FLOW_SENSOR = 22
 
-  while GPIO.input(ECHO)==0:               #Check whether the ECHO is LOW
-    pulse_start = time.time()              #Saves the last known time of LOW pulse
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(FLOW_SENSOR, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
-  while GPIO.input(ECHO)==1:               #Check whether the ECHO is HIGH
-    pulse_end = time.time()                #Saves the last known time of HIGH pulse 
+global count, start_counter
+count = 0
 
-  pulse_duration = pulse_end - pulse_start #Get pulse duration to a variable
 
-  distance = pulse_duration * 17150        #Multiply pulse duration by 17150 to get distance
-  distance = round(distance, 2)            #Round to two decimal points
+def countPulse(channel):
+   global count,start_counter;
+   if start_counter == 1:
+      count = count+1
+      flow = count / (60 * 7.5)
 
-  if distance > 2 and distance < 400:      #Check whether the distance is within range
-    print "Distance:",distance - 0.5,"cm"  #Print distance with 0.5 cm calibration
-  else:
-    print "Out Of Range"                   #display out of range
+GPIO.add_event_detect(FLOW_SENSOR, GPIO.FALLING, callback=countPulse)
 
-#Flow
-import RPi.GPIO as GPIO
-import time, sys
-GPIO.setmode(GPIO.BOARD)
-inpt = 11
-GPIO.setup(inpt,GPIO.IN)
-rate_cnt = 0
-tot_cnt = 0
-minutes = 0
-constant = 0.10
-time_new = 0.0
 
-print('Water Flow - Approximate')
-print('Control c to exit')
-
-while True:
-    time_new = time.time() + 60
-    rate_cnt = 0
-    while time.time() &lt;= time_new:
-        if GPIO.input(inpt)!= 0:
-            rate_cnt += 1
-            tot_cnt += 1
+def threaded_function(arg):
+    global count,start_counter;
+    with open('data.csv', mode='w') as csv_file:
+      fieldnames = ['TimeStamp','Pressure', 'Flow', 'Level','Temperature'];
+      writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+      writer.writeheader()
+      while True:
+        print "Starting setup...."
         try:
-           print(GPIO.input(inpt), end='')
+              
+              start_counter = 1
+              time.sleep(1)
+              start_counter = 0
+              flow = (count * 60 * 2.25 / 1000)
+              print "The flow is: %.3f Liter/min" % (flow)
+              payload["flow"] = int(flow);
+              count = 0
         except KeyboardInterrupt:
-           print('\nCTRL C - Exiting nicely')
-           GPIO.cleanup()
-           sys.exit()
-    minutes += 1
-    print('\nLiters / min',round(rate_cnt * constant,4))
-    print('Total liters', round(tot_cnt * constant,4))
-    print('Time (min & clock) ', minutes, '\t', time.asctime(time.localtime()))
+              print '\ncaught keyboard interrupt!, bye'
+              GPIO.cleanup()
+              sys.exit()
 
-GPIO.cleanup()
-print('Done')
-"""
+        GPIO.output(TRIG, False)                 #Set TRIG as LOW
+        print "Waitng For Sensor To Settle"
+        time.sleep(1)                            #Delay of 2 seconds
+        GPIO.output(TRIG, True)                  #Set TRIG as HIGH
+        time.sleep(0.00001)                      #Delay of 0.00001 seconds
+        GPIO.output(TRIG, False)                 #Set TRIG as LOW
+        while GPIO.input(ECHO)==0:               #Check whether the ECHO is LOW
+          pulse_start = time.time()              #Saves the last known time of LOW pulse
+        while GPIO.input(ECHO)==1:               #Check whether the ECHO is HIGH
+          pulse_end = time.time()                #Saves the last known time of HIGH pulse 
+        pulse_duration = pulse_end - pulse_start #Get pulse duration to a variable
+        distance = pulse_duration * 17150        #Multiply pulse duration by 17150 to get distance
+        distance = round(distance, 2)            #Round to two decimal points
+        
+        if distance > 0 and distance < 101:      #Check whether the distance is within range
+          print "Distance:",distance - 0.5,"cm"  #Print distance with 0.5 cm calibration
+          payload["level"] = int(distance - 0.5);
+        else:
+          payload["level"] = int(np.random.randint(1,100,1));
 
-import requests
+        if payload["level"] <= values["thresholdLevel"]:
+         GPIO.output(in1, True);
+         GPIO.output(in2, False);
+        else:
+         GPIO.output(in1, False);
+         GPIO.output(in2, True);
+        
+        payload["temperature"] = int(np.random.randint(1,100,1));
 
-payload = {'flow':5, 'temperature':80,'level':100};
+        currentDT = datetime.datetime.now();
+        writer.writerow({'TimeStamp': str(currentDT),'Pressure': 'NA' ,'Flow': payload["flow"], 'Level': payload["level"],'Temperature':payload["temperature"]});
 
-r = requests.post("http://127.0.0.1:2019/hmi", data=payload)
-print(r.text)
+        r = requests.post("http://127.0.0.1:2019/hmi", data=payload) #Send the data
+        print(r.text)
+        time.sleep(2);
+
+
+
+@app.route('/setThreshold',  methods=['GET'])
+def setThreshold():
+  values["thresholdPressure"] = int(request.args.get('thresholdPressure'));
+  values["thresholdFlow"] = int(request.args.get('thresholdFlow'));
+  values["thresholdLevel"] = int(request.args.get('thresholdLevel'));
+  values["thresholdTemperature"] = int(request.args.get('thresholdTemperature'));
+  print(values);
+  return "Values set!";
+
+
+
+thread = Thread(target = threaded_function, args = (10, ))
+thread.start()
+
+
+if __name__ == "__main__":
+    app.run(debug = True,host='0.0.0.0')
+
+
+
+
+
+
+

@@ -84,39 +84,35 @@ var control = {
     heading: 'Control',
     content: `<div class="w3-container w3-padding-64 w3-theme-l5">
                 <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-dashboard fa-fw w3-margin-right w3-xmedium w3-text-teal"></i>Control Panel</h2>
-                <form>
+                
                         <h6 align="center">Pressure</h6>
                         <div align="center"> 
                             <button class="w3-button w3-teal w3-round-medium">ON/OFF</button>
-                            <button class="w3-button w3-teal w3-round-medium">000</button>
+                            <input type="number" id="thresholdPressure" name="threshold" min="0" max="200" class="w3-input w3-teal w3-round-medium">
                             <button class="w3-button w3-teal w3-round-medium">Log</button>
-                            <input type="range" name="points" min="0" max="10" step ="0.1"/>
                         </div>
                         <h6 align="center">Flow</h6>
                         <div align="center"> 
                             <button class="w3-button w3-teal w3-round-medium">ON/OFF</button>
-                            <button class="w3-button w3-teal w3-round-medium">000</button>
+                            <input type="number" id="thresholdFlow" name="threshold" min="0" max="200" class="w3-input w3-teal w3-round-medium">
                             <button class="w3-button w3-teal w3-round-medium">Log</button>
-                            <input type="range" name="points" min="0" max="10" step ="0.1"/>
                         </div>
                         <h6 align="center">Level</h6>
                         <div align="center"> 
                             <button class="w3-button w3-teal w3-round-medium">ON/OFF</button>
-                            <button class="w3-button w3-teal w3-round-medium">000</button>
+                            <input type="number" id="thresholdLevel" name="threshold" min="0" max="200" class="w3-input w3-teal w3-round-medium">
                             <button class="w3-button w3-teal w3-round-medium">Log</button>
-                            <input type="range" name="points" min="0" max="10" step ="0.1"/>
                         </div>
                         <h6 align="center">Temperature</h6>
                         <div align="center">
                             <button class="w3-button w3-teal w3-round-medium">ON/OFF</button>
-                            <button class="w3-button w3-teal w3-round-medium">000</button>
+                            <input type="number" id="thresholdTemperature" name="threshold" min="0" max="200" class="w3-input w3-teal w3-round-medium">
                             <button class="w3-button w3-teal w3-round-medium">Log</button>
-                            <input type="range" name="points" min="0" max="10" step ="0.1"/>
                         </div><br/>
                         <div align="center">
-                            <input type="submit" value="Submit">
+                            <button class="w3-button w3-teal w3-round-medium" onclick="setValues()"> Submit </button>
                         </div>
-                </form>
+                
             </div>`,
 }
 
@@ -138,6 +134,7 @@ function mainTemplate (data) {
                 <link rel="stylesheet" href="main.css">
                 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
                 
                 <!-- Favicon-->
                 <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon">
@@ -236,27 +233,60 @@ function mainTemplate (data) {
 
                 </script>
 
-                <script>
-                var slider = document.getElementById("myRange");
-                var output = document.getElementById("demo");
-                output.innerHTML = slider.value; // Display the default slider value
+                
 
-                // Update the current slider value (each time you drag the slider handle)
-                slider.oninput = function() {
-                  output.innerHTML = this.value;
-                }
-                </script>
 
-                <script>
-                var slider = document.getElementById("myRange");
-                var output = document.getElementById("demo");
-                output.innerHTML = slider.value; // Display the default slider value
+                    <script>
+                function setValues(){
 
-                // Update the current slider value (each time you drag the slider handle)
-                slider.oninput = function() {
-                  output.innerHTML = this.value;
-                }
-                </script>
+
+                var thresholdPressure = parseInt(document.getElementById("thresholdPressure").value);
+                var thresholdFlow = parseInt(document.getElementById("thresholdFlow").value);
+                var thresholdLevel = parseInt(document.getElementById("thresholdLevel").value);
+                var thresholdTemperature = parseInt(document.getElementById("thresholdTemperature").value);
+
+                if(thresholdPressure < 0 || thresholdPressure > 200)
+                    alert("Invalid Pressure value");
+                else if(thresholdFlow < 0 || thresholdFlow > 60)
+                    alert("Invalid Flow value");
+                else if(thresholdLevel < 0 || thresholdLevel > 100)
+                    alert("Invalid Level value");
+                else if(thresholdTemperature < 0 || thresholdTemperature > 200)
+                    alert("Invalid Temperature value");
+                else{
+
+
+                alert("Pressure: "+ thresholdPressure.toString()+"   Flow: "+thresholdFlow.toString()+"   Level: "+thresholdLevel.toString()+"   Temperature: "+thresholdTemperature.toString()); 
+
+
+                $.ajax({
+        url: 'http://192.168.1.6:5000/setThreshold',
+        type: 'get',
+        data: {thresholdPressure:thresholdPressure,thresholdFlow : thresholdFlow, thresholdLevel : thresholdLevel, thresholdTemperature : thresholdTemperature},
+        success: function (data) {
+            alert("success");
+        },
+        error: function (xhr, status, error) {
+            alert('Error: ' + error.message);
+           // alert(status)
+           // alert(error)
+          }
+      });
+
+
+
+            }
+
+        }
+
+</script>
+
+
+
+
+
+
+                
 
                 </body>
                 </html> 

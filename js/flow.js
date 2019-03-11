@@ -61,7 +61,7 @@ var flowChart = Highcharts.chart('flow', Highcharts.merge(gaugeOptions, {
 
   yAxis: {
     min: 0,
-    max: 10,
+    max: 60,
   },
 
   credits: {
@@ -101,7 +101,7 @@ $.ajax({
             if (flowChart) {
             point = flowChart.series[0].points[0];
             flowVal = parseInt(hmiData['flow']);
-            if (flowVal < 0 || flowVal > 10) {
+            if (flowVal < 0 || flowVal > 60) {
             flowVal = point.y - 10;
             }
 
