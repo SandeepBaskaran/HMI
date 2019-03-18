@@ -94,7 +94,7 @@ var hmiData;
     newVal;
 
 $.ajax({
-        url: 'http://127.0.0.1:2019/getData',
+        url: 'http://192.168.1.7:2019/getData',
         type: 'GET',
         data: {},
         success: function (data) {

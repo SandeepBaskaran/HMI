@@ -455,7 +455,7 @@ data['flow'] = req.body.flow;
 data['level'] = req.body.level;
 data['temperature'] = req.body.temperature;
 console.log(data);
-res.end("Data Recieved");
+//res.end("Data Recieved");
 
 });
 

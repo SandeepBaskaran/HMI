@@ -1,10 +1,12 @@
-import RPi.GPIO as GPIO                    #Import GPIO library
-import time, sys                              #Import time library
-import numpy as np                          #Numpy package for dummy values
+import RPi.GPIO as GPIO# Import GPIO library
+import time, sys# Import time library
+import numpy as np# Numpy package for dummy values
 import requests
 from flask import Flask, request
 import json
 from threading import Thread
+import csv
+import datetime
 
 payload = {'flow':5, 'temperature':80,'level':100}; #initial values for pay load
 values = {"thresholdPressure":0,"thresholdFlow":0,"thresholdLevel":0,"thresholdTemperature":0};
@@ -13,11 +15,16 @@ app = Flask(__name__);
 #Ultrasonic sensor and relay pins
 
 
-GPIO.setmode(GPIO.BCM)                     #Set GPIO pin numbering 
+GPIO.setmode(GPIO.BCM)                     #Set GPIO pin numbering
+GPIO.setwarnings(False);
 TRIG = 23                                  #Associate pin 23 to TRIG
 ECHO = 24                                  #Associate pin 24 to ECHO
 in1 = 17                                    #Relay IN 1 pin
 in2 = 18                                    #Relay IN 2 pin
+
+#Water flow sensor pins
+
+FLOW_SENSOR = 22
 
 GPIO.setup(TRIG,GPIO.OUT)                  #Set pin as GPIO out
 GPIO.setup(ECHO,GPIO.IN)                   #Set pin as GPIO in
@@ -27,9 +34,7 @@ GPIO.setup(in2, GPIO.OUT)
 GPIO.output(in1, False)
 GPIO.output(in2, False)
 
-#Water flow sensor pins
 
-FLOW_SENSOR = 22
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(FLOW_SENSOR, GPIO.IN, pull_up_down = GPIO.PUD_UP)
@@ -49,64 +54,80 @@ GPIO.add_event_detect(FLOW_SENSOR, GPIO.FALLING, callback=countPulse)
 
 def threaded_function(arg):
     global count,start_counter;
-    with open('data.csv', mode='w') as csv_file:
-      fieldnames = ['TimeStamp','Pressure', 'Flow', 'Level','Temperature'];
-      writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-      writer.writeheader()
-      while True:
-        print "Starting setup...."
-        try:
-              
-              start_counter = 1
-              time.sleep(1)
-              start_counter = 0
-              flow = (count * 60 * 2.25 / 1000)
-              print "The flow is: %.3f Liter/min" % (flow)
-              payload["flow"] = int(flow);
-              count = 0
-        except KeyboardInterrupt:
-              print '\ncaught keyboard interrupt!, bye'
-              GPIO.cleanup()
-              sys.exit()
+    while True:
+      #print "Starting setup...."
+      try:
+            
+            start_counter = 1
+            time.sleep(1)
+            start_counter = 0
+            flow = (count * 60 * 2.25 / 1000)
+            print "Flow: %.3f Liter/min" % (flow)
+            payload["flow"] = int(flow);
+            count = 0
+      except KeyboardInterrupt:
+            print '\ncaught keyboard interrupt!, bye'
+            GPIO.cleanup()
+            sys.exit()
+      try:
+        tempStore = open("/sys/bus/w1/devices/28-03119779c0c6/w1_slave")# change this number to the Device ID of your sensor
+        data = tempStore.read()
+        tempStore.close()
+        tempData = data.split("\n")[1].split(" ")[9]
+        temperature = float(tempData[2: ])
+        temperature = temperature / 1000
+        print  "Temperature: %.3f Celcius" % (temperature)
+        payload["temperature"] = int(temperature);#
+        time.sleep(1)
+      except KeyboardInterrupt:
+        GPIO.cleanup()# print("Program Exited Cleanly")
 
-        GPIO.output(TRIG, False)                 #Set TRIG as LOW
-        print "Waitng For Sensor To Settle"
-        time.sleep(1)                            #Delay of 2 seconds
-        GPIO.output(TRIG, True)                  #Set TRIG as HIGH
-        time.sleep(0.00001)                      #Delay of 0.00001 seconds
-        GPIO.output(TRIG, False)                 #Set TRIG as LOW
-        while GPIO.input(ECHO)==0:               #Check whether the ECHO is LOW
-          pulse_start = time.time()              #Saves the last known time of LOW pulse
-        while GPIO.input(ECHO)==1:               #Check whether the ECHO is HIGH
-          pulse_end = time.time()                #Saves the last known time of HIGH pulse 
-        pulse_duration = pulse_end - pulse_start #Get pulse duration to a variable
-        distance = pulse_duration * 17150        #Multiply pulse duration by 17150 to get distance
-        distance = round(distance, 2)            #Round to two decimal points
-        
-        if distance > 0 and distance < 101:      #Check whether the distance is within range
-          print "Distance:",distance - 0.5,"cm"  #Print distance with 0.5 cm calibration
-          payload["level"] = int(distance - 0.5);
-        else:
-          payload["level"] = int(np.random.randint(1,100,1));
+      GPIO.output(TRIG, False)                 #Set TRIG as LOW
+      #print "Waitng For Sensor To Settle"
+      time.sleep(1)                            #Delay of 1 seconds
+      GPIO.output(TRIG, True)                  #Set TRIG as HIGH
+      time.sleep(0.00001)                      #Delay of 0.00001 seconds
+      GPIO.output(TRIG, False)                 #Set TRIG as LOW
+      while GPIO.input(ECHO)==0:               #Check whether the ECHO is LOW
+        pulse_start = time.time()              #Saves the last known time of LOW pulse
+      while GPIO.input(ECHO)==1:               #Check whether the ECHO is HIGH
+        pulse_end = time.time()                #Saves the last known time of HIGH pulse 
+      pulse_duration = pulse_end - pulse_start #Get pulse duration to a variable
+      distance = pulse_duration * 17150        #Multiply pulse duration by 17150 to get distance
+      distance = round(distance, 2)            #Round to two decimal points
+      
+      if distance > 0 and distance < 101:      #Check whether the distance is within range
+        print "Level:",distance - 0.5,"cm"  #Print distance with 0.5 cm calibration
+        payload["level"] = int(distance - 0.5);
+      else:
+        payload["level"] = int(np.random.randint(1,100,1));
 
-        if payload["level"] <= values["thresholdLevel"]:
-         GPIO.output(in1, True);
-         GPIO.output(in2, False);
-        else:
-         GPIO.output(in1, False);
-         GPIO.output(in2, True);
-        
-        payload["temperature"] = int(np.random.randint(1,100,1));
-
-        currentDT = datetime.datetime.now();
-        writer.writerow({'TimeStamp': str(currentDT),'Pressure': 'NA' ,'Flow': payload["flow"], 'Level': payload["level"],'Temperature':payload["temperature"]});
-
-        r = requests.post("http://127.0.0.1:2019/hmi", data=payload) #Send the data
-        print(r.text)
-        time.sleep(2);
-
-
-
+      if payload["level"] <= values["thresholdLevel"]:
+       GPIO.output(in1, True);
+       GPIO.output(in2, False);
+      else:
+       GPIO.output(in1, False);
+       GPIO.output(in2, True);
+       
+      currentDT = datetime.datetime.now();
+      writer.writerow({
+          'TimeStamp': str(currentDT),
+          'Pressure': 'NA',
+          'Flow': payload["flow"],
+          'Level': payload["level"],
+          'Temperature': payload["temperature"]
+      });
+      print(payload);
+      
+      r = requests.post("http://192.168.1.7:2019/hmi", data=payload) #Send the data
+      print(r.text)
+      time.sleep(1);
+      
+    with open('data.csv', mode = 'w') as csv_file:
+        fieldnames = ['TimeStamp', 'Pressure', 'Flow', 'Level', 'Temperature'];
+        writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
+        writer.writeheader()
+      
 @app.route('/setThreshold',  methods=['GET'])
 def setThreshold():
   values["thresholdPressure"] = int(request.args.get('thresholdPressure'));
@@ -127,31 +148,6 @@ if __name__ == "__main__":
 
 
 
-"""
-#import modules
-import time
-import RPi.GPIO as GPIO
-
-#GPIO setup
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-#main loop
-try:
-    while 1:
-        tempStore = open("/sys/bus/w1/devices/28-03119779c0c6/w1_slave")    #change this number to the Device ID of your sensor
-        data = tempStore.read()
-        tempStore.close()
-        tempData = data.split("\n")[1].split(" ")[9]
-        temperature = float(tempData[2:])
-        temperature = temperature/1000
-        print temperature
-
-        time.sleep(1)
-
-except KeyboardInterrupt:
-    GPIO.cleanup()
-    print ("Program Exited Cleanly")
-"""
 
 
 
