@@ -260,18 +260,18 @@ function mainTemplate (data) {
 
 
                 $.ajax({
-        url: 'http://192.168.1.6:5000/setThreshold',
-        type: 'get',
-        data: {thresholdPressure:thresholdPressure,thresholdFlow : thresholdFlow, thresholdLevel : thresholdLevel, thresholdTemperature : thresholdTemperature},
-        success: function (data) {
-            alert("success");
-        },
-        error: function (xhr, status, error) {
-            alert('Error: ' + error.message);
-           // alert(status)
-           // alert(error)
-          }
-      });
+                    url: 'http://192.168.0.107:5000/setThreshold',
+                    type: 'get',
+                    data: {thresholdPressure:thresholdPressure,thresholdFlow : thresholdFlow, thresholdLevel : thresholdLevel, thresholdTemperature : thresholdTemperature},
+                    success: function (data) {
+                        alert("success");
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error.message);
+                       // alert(status)
+                       // alert(error)
+                      }
+                  });
 
 
 
@@ -455,8 +455,12 @@ data['flow'] = req.body.flow;
 data['level'] = req.body.level;
 data['temperature'] = req.body.temperature;
 console.log(data);
-//res.end("Data Recieved");
+res.end("Data Recieved");
 
+});
+
+app.get('/HMI', function (req,res) {
+var url_parts = url.parse(request.url, true);
 });
 
 app.get('/getData', function (req,res) {
